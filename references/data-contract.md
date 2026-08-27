@@ -9,6 +9,7 @@ The local host may persist only derived business data that the user explicitly c
 - canonical result rows and result lineage;
 - permanent library rows and their history keys;
 - reference Tags, both blacklists, immutable rule versions and diffs;
+- pending rule suggestions and user-confirmed learned rules with positive/negative regression examples;
 - optional compact run/output metadata and error classification (never the full input record);
 - Raindrop mapping only when it is a local export artifact, not an API credential or remote session.
 
@@ -30,7 +31,7 @@ Keep the authoritative selected rows in a local CSV (or the equivalent local tab
 
 Reference Tags and the two MissAV blacklists remain separate files. A tag blacklist must not delete a curated result, and a result-library row must not silently become a blacklist entry. Any automatic suggestion is placed in a preview list until the user explicitly promotes it.
 
-Updates use a temporary file plus atomic replace, preserve a timestamped backup, validate headers/unique keys/UTF-8, and reject partial or ambiguous rows. A CSV may be opened by other AI tools, but the local host remains responsible for locking and conflict detection.
+Updates use a temporary file plus atomic replace, preserve a timestamped backup, validate headers/unique keys/UTF-8, and reject partial or ambiguous rows. Rule suggestions never become active until explicit confirmation and regression checks; a CSV may be opened by other AI tools, but the local host remains responsible for locking and conflict detection.
 
 ## Data operations
 

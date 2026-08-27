@@ -34,6 +34,14 @@ Preview extracted tags, duplicates, removed boundary tags, and blacklist effects
 
 Call a filtered result query, exclude deleted rows, and return a plain-text block with no bullets or commentary inside the block.
 
+## Same containers, adaptive review
+
+```text
+用 LoveAV 处理这个 CSV，运行 MissAV、Twitter、Bad.news 和海角；不要把不确定的格式直接丢掉，列出可疑项并说明证据。
+```
+
+Run all four selected tools over the same input container. Return accepted, clearly excluded, `review`, and error counts separately. For a new candidate shape, show the smallest confirmation question and create a rule suggestion only; do not silently activate a learned rule.
+
 ## Legacy opt-in
 
 ```text

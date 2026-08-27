@@ -14,7 +14,9 @@ loveav-data/
 ├─ rules/
 │  ├─ reference-tags.txt
 │  ├─ reference-blacklist.csv
-│  └─ raindrop-export-blacklist.csv
+│  ├─ raindrop-export-blacklist.csv
+│  ├─ rule-suggestions.csv    # 待用户确认的未知格式建议
+│  └─ learned-rules.csv       # 已确认并带回归样本的新增规则
 ├─ indexes/
 │  ├─ history-index.csv         # 从 curated-results.csv 生成，不手工编辑
 │  └─ seen-index.csv            # 旧库/历史输入已见身份，可含待复核项
@@ -64,5 +66,7 @@ pattern,match_type,enabled,note
 - 参考女优 Tag 库：用于判断 MissAV 是否命中参考人物。
 - 第一层黑名单：从参考命中计算中排除 Tag，但不删除精选结果。
 - 第二层黑名单：阻止 Raindrop 导出，不删除精选结果。
+- `rule-suggestions.csv`：保存待复核的未知格式，不直接参与正式过滤。
+- `learned-rules.csv`：只保存用户确认、带正负回归样本且已版本化的新增规则。
 - 精选结果库：用于未来历史查重和用户自己的参考样本。
 - 精选库不反向修改规则，除非用户明确要求“把这些 Tag 加入规则”。

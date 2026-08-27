@@ -1,11 +1,11 @@
 # Tool rules
 
-These are the behavior requirements carried forward from Windows v0.5.13. They are rules, not a license to access a website without an explicit user request.
+These are the baseline behavior requirements carried forward from Windows v0.5.13. They are rules, not a license to access a website without an explicit user request. They are not a closed-world rejection list: after the baseline pass, unfamiliar candidates must follow [the adaptive review lifecycle](rule-learning.md).
 
 ## MissAV
 
 - Normalize codes to uppercase, collapse whitespace/underscore separators to `-`, collapse repeated hyphens, and normalize FC2 variants to `FC2-PPV-<digits>`.
-- Accept the established alphanumeric code shape (`letters-digits` with an optional validated suffix) and discard prose, URLs from unrelated sites, dates, category labels, and obvious noise. Preserve a trusted MissAV detail URL from the input when present; otherwise produce the canonical MissAV URL only where the host's rule adapter supports it.
+- Accept the established alphanumeric code shape (`letters-digits` with an optional validated suffix) and clearly discard prose, URLs from unrelated sites, dates, category labels, and obvious noise. Preserve a trusted MissAV detail URL from the input when present; otherwise produce the canonical MissAV URL only where the host's rule adapter supports it. Borderline or new shapes go to `review` with evidence instead of being silently discarded.
 - Treat URLs such as `https://missav.ai/dm558/110223-001` and `https://missav.ai/dm166/pondo-030326_001` as detail-page candidates. Do not require a short `AA-999` code when a trusted MissAV detail path supplies the identifier.
 - The browser script is a validated user template. Inject only the normalized `CODE_TEXT`, current reference actress tags, and the export blacklist. Escape backticks and `${` before injection; never fabricate a replacement script when the template lacks its required placeholders.
 - Reference Tag blacklist removes a tag from reference matching only. It does not remove the tag from the source library and does not prevent a film from entering the non-reference output folder.
@@ -17,20 +17,20 @@ These are the behavior requirements carried forward from Windows v0.5.13. They a
 ## Twitter
 
 - Prefer each message's ASCII `#tag` as the creator signal. Accept a valid `@handle` and an `x.com`/`twitter.com` profile URL as fallbacks.
-- Handles are 1–15 ASCII letters, digits, or underscores. Exclude reserved paths such as `home`, `explore`, `search`, `settings`, `login`, `messages`, and `notifications`; exclude short topic tags and promotion/portal tags (especially a tag immediately following “传送门”).
+- Handles are 1–15 ASCII letters, digits, or underscores. Exclude clearly reserved paths such as `home`, `explore`, `search`, `settings`, `login`, `messages`, and `notifications`; exclude obvious short topic tags and promotion/portal tags (especially a tag immediately following “传送门”). Borderline handles require `review` rather than silent rejection.
 - Exclude handles ending in `_bot` for mention fallback. Deduplicate case-insensitively while preserving first-seen order.
 - Return creator names and profile URLs as two separate lists using `https://x.com/<handle>`.
 
 ## Bad.news
 
 - Accept only `https://bad.news/t/<digits>` on the canonical host, with optional query/fragment/trailing path removed.
-- Exclude `/app`, category pages, home pages, tracking URLs, advertisements, and non-post links. Deduplicate exact canonical URLs while preserving first-seen order.
+- Exclude confirmed `/app`, category pages, home pages, tracking URLs, advertisements, and non-post links. Deduplicate exact canonical URLs while preserving first-seen order; an unfamiliar but plausible post path is a review candidate.
 
 ## Haijiao
 
 - Accept only numeric direct posts under these seven categories: `hjjd`, `hjmz`, `hjyc`, `hjfn`, `hjsz`, `hjrq`, `hjhj`.
 - Normalize to `https://www.haijiaolove.xyz/<category>/<digits>.html`.
-- Exclude old domains, category pages, ads, redirects, tracking parameters, and other site paths.
+- Exclude confirmed old domains, category pages, ads, redirects, tracking parameters, and other site paths. New numeric direct-post shapes are reviewed with their URL evidence before exclusion.
 
 ## Whos.tv solved answers
 

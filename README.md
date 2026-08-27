@@ -13,15 +13,15 @@
 
 ## 包含的 5.13 能力
 
-- MissAV、Twitter、Bad.news、海角四个确定性过滤器。
+- MissAV、Twitter、Bad.news、海角四个基线过滤器，并对未知格式提供可疑项复核和确认后学习。
 - MissAV 番号规范化、详情链接、浏览器脚本、参考女优 Tag、两层黑名单和三目录 Raindrop 导出。
-- Telegram Desktop HTML/JSON、多文件、粘贴文本、时间筛选、选择、查重和历史语义。
+- 四个前置工具统一接受 Telegram Desktop HTML/JSON、TXT、CSV、MD、LOG、多文件和粘贴文本；支持时间筛选、选择、查重和历史语义。
 - 精选结果库、查重索引、规则包，TXT/CSV/JSON 输出，以及 v0.5.13 业务数据迁移契约。
 - Whos.tv 已解决答案：控制台抓取脚本、增量截止点、JSON 校验、四类 Markdown 和脚本归档。
 - 123AV 的番号解析、页面证据和导出规则；收藏/关注等账号操作不启用。
 - Telegram Desktop 文件解析、消息规范化和时间筛选；个人 API、Bot、历史回拉、检查点和标记已读不启用。
 
-详细规则位于 `references/`。精选资料库契约见 `references/curated-library.md`。Skill 只决定流程、规则和输出；本版本不包含 Telegram、Work/cloud 或远程账号执行器。
+详细规则位于 `references/`，自适应规则学习见 `references/rule-learning.md`。精选资料库契约见 `references/curated-library.md`。Skill 只决定流程、规则和输出；本版本不包含 Telegram、Work/cloud 或远程账号执行器。
 
 ## 版本与边界
 

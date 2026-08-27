@@ -5,7 +5,7 @@ description: "Use this skill as a local-first LoveAV content workbench for Teleg
 
 # LoveAV Skill
 
-This Skill is the primary product surface. It makes Codex or another compatible AI execute the TG content workflow; a UI is only an occasional administration fallback. Keep behavior deterministic by calling the host's rule/data tools instead of inventing regexes or silently changing stored rules.
+This Skill is the primary product surface. It makes Codex or another compatible AI execute the TG content workflow; a UI is only an occasional administration fallback. Use the current rules as a stable baseline, then apply the adaptive review loop in [rule learning](references/rule-learning.md) when an input is unfamiliar. Never silently invent, enable, or discard a new rule.
 
 ## Operating modes
 
@@ -21,16 +21,22 @@ Treat the local companion data directory (`loveav-data/` beside this Skill, or a
 
 Manual mode is the default even if a connected adapter exists. Never switch modes merely because a file looks like a Telegram export.
 
+The first four content functions (MissAV, Twitter, Bad.news, and Haijiao) share one input contract: any combination of Telegram Desktop HTML/JSON, TXT, CSV, MD, LOG, or pasted plain text. The file type is only an input container; the selected tool decides what can be extracted from its text. Whos.tv has its separate returned-JSON workflow.
+
 ## Standard workflow
 
 1. **Classify the request.** Identify input, selected tools, time range, local library policy, and requested outputs. If a required choice is missing, ask one short question; do not save anything with guessed settings.
 2. **Preview transient input.** Parse all pasted text and selected files together. Merge Telegram Desktop multipart files from the same export session, retain message date/source/message ID where available, and deduplicate by the stable message identity. Keep raw message text only in the current request/preview memory.
 3. **Show sources before processing.** Present each source title, kind, count, and a stable key. Reuse a saved binding only when the key matches. If a source has no binding or could map to multiple tools, ask the user to choose; never infer from filename alone.
-4. **Apply the selected tool rules.** Run each tool independently over the selected messages. Preserve input order, normalize values, and remove duplicates using the tool's canonical key. Read [tool rules](references/tool-rules.md) for exact behavior.
-5. **Apply library and blacklists.** Compare canonical result keys with the selected-row library before reporting “new”. If an optional `seen-index.csv` also contains the key but it is absent from the curated library, label it “以前见过但未精选” and do not silently suppress it. Apply the two MissAV blacklist layers in their distinct order; never merge them. Do not let an AI guess become a permanent rule without explicit confirmation and a regression sample.
+4. **Apply baseline rules and adaptive review.** Run each selected tool independently, preserving order and canonical deduplication. Apply the established baseline in [tool rules](references/tool-rules.md), then inspect unfamiliar or borderline candidates with the evidence checklist in [rule learning](references/rule-learning.md). Do not discard a candidate solely because its shape is new; classify it as `review` when evidence is insufficient.
+5. **Apply library and blacklists.** Compare canonical result keys with the selected-row library before reporting “new”. If an optional `seen-index.csv` also contains the key but it is absent from the curated library, label it “以前见过但未精选” and do not silently suppress it. Apply the two MissAV blacklist layers in their distinct order; never merge them. A proposed rule remains a suggestion until the user confirms it and a regression sample is recorded.
 6. **Return useful output immediately.** Give a compact summary followed by copy-ready fenced plain text. Separate primary values from links. Generate files only when requested. Read [input/output contract](references/input-output.md).
 7. **Persist only selected derived data.** Save only rows the user explicitly keeps, plus the canonical key, tags, rule version, source hash, and timestamps. Do not save every run, Telegram raw text, or transient previews.
 8. **Report failures precisely.** Separate parse errors, invalid candidates, network errors, access challenges, rate limits, user confirmation requirements, and partial completion. Offer retry/resume only when the host exposes a checkpoint; never claim success from a timeout or an HTTP status alone.
+
+## Adaptive rule learning
+
+When the baseline does not confidently classify a candidate, use a three-way outcome: accept, reject, or `review`. For `review`, preserve only a transient evidence snippet in the response, explain which checks disagree, and ask for a focused confirmation instead of guessing. Record confirmed/rejected examples as a versioned rule suggestion with scope, rationale, and false-positive guard. Promote a suggestion to the active rules only after explicit user confirmation and at least one positive and one negative regression example; keep tool-specific rules separate unless evidence proves they are shared. If the host has no write adapter, return the suggestion in a copyable form and do not claim that the Skill learned it. Read [rule learning](references/rule-learning.md) for the exact lifecycle and storage fields.
 
 ## Whos.tv solved answers
 
@@ -49,7 +55,7 @@ Map these logical operations to whatever MCP, CLI, or local adapter is available
 input.preview(files, pasted_text, start, end)
 input.process(preview_id, selected_message_keys, source_bindings, tools)
 history.search(tool, canonical_query, include_deleted)
-rules.get / rules.preview / rules.commit / rules.rollback
+rules.get / rules.preview / rules.suggest / rules.review / rules.commit / rules.rollback
 results.query / results.copy / results.export
 script.generate(codes, reference_tags, both_blacklists)
 whostv.script.generate(mode, pages_or_cutoff)
@@ -68,7 +74,7 @@ If the host only supports analysis and not writes, still complete parsing/filter
 - Bad.news and Haijiao: one canonical direct-post URL per line; exclude app, category, advertising, tracking, and junk URLs.
 - Whos.tv: validate the returned JSON, then generate one date-named Markdown file with the fixed four-category order and the pure-code list at the top.
 - Generic exports: UTF-8 TXT, CSV with formula-injection protection, JSON, and versioned result/library/rule packages.
-- Always state counts for input, excluded-by-time, invalid, duplicate, historical, new, and error records when those counts are available.
+- Always state counts for input, excluded-by-time, invalid, duplicate, historical, new, `review`, and error records when those counts are available.
 - Do not put explanations inside a copy-ready list. Keep labels and lists separate.
 
 ## Safety and confirmation
@@ -88,6 +94,7 @@ The UI is not the daily workflow. Open it only for large curated-library edits, 
 - [Legacy parity](references/legacy-parity.md) — v0.5.13 capabilities retained as a disabled reference only.
 - [v0.5.13 feature map](references/v0513-feature-map.md) — parity checklist for future adapters.
 - [Safety](references/safety.md) — credentials, network, account actions, destructive operations, and recovery.
+- [Rule learning](references/rule-learning.md) — suspicious candidates, evidence review, suggestions, promotion, and regression samples.
 - [Examples](references/examples.md) — natural-language requests and expected response shape.
 - [Whos.tv solved answers](references/whostv-solved-answers.md) — scraping, dynamic cutoff, validation, classification, archive, and Markdown rules.
 

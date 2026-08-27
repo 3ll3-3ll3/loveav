@@ -9,6 +9,8 @@ Accept any combination of:
 - Telegram Desktop JSON;
 - TXT, CSV, MD, or LOG text files.
 
+MissAV, Twitter, Bad.news, and Haijiao all accept the same containers above; do not require a separate file type for a particular tool. One file can be run through multiple selected tools, with each tool applying its own extraction and review rules.
+
 For HTML, read visible message text, links, dates, message IDs, and the export chat title. For JSON, support the official message/text-array shape and preserve the explicit chat/container identity when present. For plain text, create a transient source identity from the input label and a content hash; do not pretend it is a Telegram chat.
 
 ## Preview and selection
@@ -37,7 +39,7 @@ Every derived row should carry:
   "secondary_value": "detail/profile URL when applicable",
   "source_key": "transient or connected source identity",
   "rule_version": "immutable version identifier",
-  "status": "new | duplicate | historical | invalid | error | excluded",
+  "status": "new | duplicate | historical | invalid | review | error | excluded",
   "reason": "short machine-readable reason"
 }
 ```
