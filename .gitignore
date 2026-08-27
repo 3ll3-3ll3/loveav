@@ -1,0 +1,29 @@
+# Never commit runtime data or credentials when this Skill is copied into a repo.
+local-data/
+runtime-data/
+user-data/
+loveav-data/
+# Legacy data directory is also private while users migrate to loveav-data.
+tg-toolbox-data/
+library/
+indexes/
+exports/
+backups/
+reports/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.session
+*.session-journal
+.env
+.env.*
+!.env.example
+*.log
+*.zip
+*.ndjson
+*.jsonl
+__pycache__/
+*.pyc

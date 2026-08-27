@@ -1,0 +1,4 @@
+interface:
+  display_name: "LoveAV"
+  short_description: "Process TG text, codes, links, history, and Whos.tv answers consistently"
+  default_prompt: "Use $loveav to process these files and return copyable results."
