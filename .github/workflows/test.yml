@@ -1,0 +1,27 @@
+name: LoveAV tests
+
+on:
+  push:
+    branches: [main, "codex/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Python deterministic tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Python compile check
+        run: python -m py_compile scripts/filter_svip_resource_replies.py scripts/migrate_v0513_library.py
+      - name: Whos.tv regression tests
+        run: node --test tests/whostv.test.js
